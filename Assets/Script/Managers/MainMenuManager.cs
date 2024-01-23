@@ -6,6 +6,7 @@ public class MainMenuManager : MonoBehaviour
 {
     public GameObject pnl_NbJoueurs;
     public GameObject pnl_MainMenu;
+    public GameObject pnl_JoueursName;
 
     [Header("Data")]
     public JoueursDataBase joueursDataBaseRef;
@@ -39,26 +40,23 @@ public class MainMenuManager : MonoBehaviour
 
     public void PlayGame()
     {
-        StartCoroutine(wait());
-        UnityEngine.SceneManagement.SceneManager.LoadScene(idScene);
+        //StartCoroutine(wait());
+        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
 
     }
 
-    //public void _2Joueurs()
-    //{
-    //    StartCoroutine(wait());
-    //    joueursDatas[1].Play = true;
-    //}
 
-    //public void _3Joueurs()
-    //{
-    //    joueursDatas[2].Play = true;
-    //}
+    public void GoToJoueursName()
+    {
+        pnl_NbJoueurs.SetActive(false);
+        pnl_JoueursName.SetActive(true);
+    }
+    public void GoToNbJoueursViaName()
+    {
+        pnl_NbJoueurs.SetActive(true);
+        pnl_JoueursName.SetActive(false);
+    }
 
-    //public void _4Joueurs()
-    //{
-    //    joueursDatas[3].Play = true;
-    //}
 
     IEnumerator wait()
     {

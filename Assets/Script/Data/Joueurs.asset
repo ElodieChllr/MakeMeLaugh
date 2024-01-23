@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   datas:
   - JoueursName: Joueur 1
-    Play: 1
-    reponce: 
+    Play: 0
+    answer: 
+    score: 0
   - JoueursName: Joueur 2
     Play: 0
-    reponce: 
+    answer: 
+    score: 0
   - JoueursName: Joueur 3
     Play: 0
-    reponce: 
+    answer: 
+    score: 0
   - JoueursName: Joueur 4
     Play: 0
-    reponce: 
+    answer: 
+    score: 0
