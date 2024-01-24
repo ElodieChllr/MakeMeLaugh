@@ -10,6 +10,8 @@ public class PlayerName : MonoBehaviour
     public JoueursDataBase joueursDataBaseRef;
     public Text texteInstruction;
 
+    public MaskableGraphic img_logoJoueurs;
+
     void Start()
     {
         //joueursDataBaseRef = GetComponent<JoueursDataBase>();
@@ -28,8 +30,10 @@ public class PlayerName : MonoBehaviour
     }
     public void SoumettreNom()
     {
+
         string nomJoueur = champDeSaisie.text;
         EnregistrerNomDansDataBase(nomJoueur);
+        //InitieImage();
 
         numeroJoueurActuel++;
 
@@ -50,9 +54,23 @@ public class PlayerName : MonoBehaviour
         if(numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
             joueursDataBaseRef.datas[numeroJoueurActuel].JoueursName = nom;
-            //joueursDataBaseRef.datas[numeroJoueurActuel].score += 5000;
+            
         }
     }
 
+
+    private void SetMaskableGraphicValue(ref MaskableGraphic mg, object value)
+    {
+        switch (mg)
+        {
+            
+            case Image img: img.sprite = value as Sprite; break;
+        }
+    }
+
+    private void InitieImage(JoueursData data)
+    {
+        SetMaskableGraphicValue(ref img_logoJoueurs, data.logoJoueur);
+    }
 
 }

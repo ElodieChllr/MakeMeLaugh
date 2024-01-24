@@ -7,14 +7,26 @@ using UnityEngine.UI;
 public class MiniJeu1 : MonoBehaviour
 {
     public GameObject GO_Image;
+    public GameObject buttonContinueJeu2;
     public MaskableGraphic image;
     public Text txt_instruction;
     private int joueurtourActuel = 1;
     private int joueursAyantVote = 0;
     private int joueursAyantRepondu = 0;
     private int numeroJoueurActuel = 0;
+    //private float HoldTimer = 9;
 
+
+    private Text timer;
     public InputField iF_Reponses;
+
+    public Image DirectionUI;
+    private bool isShaderAnimationPlaying = false;
+    private bool playShaderAnim = false;
+
+    public bool miniJeu1Active = true;
+    public bool miniJeu2Active = false;
+    private bool goForJeu2 = false;
 
     int[] votes = new int[4];
     List<int> excludesNumber = new List<int>();
@@ -80,6 +92,8 @@ public class MiniJeu1 : MonoBehaviour
         joueursDatas.AddRange(joueursDataBaseRef.datas);
         AfficherNouvelleImage();
 
+
+
         /*
         boutonJoueur1.onClick.AddListener(() => Vote(1));
         boutonJoueur2.onClick.AddListener(() => Vote(2));
@@ -88,7 +102,37 @@ public class MiniJeu1 : MonoBehaviour
         */
 
         InitieInfo();
+        DirectionUI = GetComponentInChildren<Image>();
+    }
 
+    private void Update()
+    {
+        //HoldTimer = -Time.fixedDeltaTime;
+        //DirectionUI.material.SetFloat("Anim", 1 - HoldTimer / 3);
+
+
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    // Activer l'animation ShaderGraph
+        //    isShaderAnimationPlaying = true;
+        //    DirectionUI.material.SetFloat("Anim", 0f); // Réinitialiser le temps d'animation
+        //}
+
+        //if (isShaderAnimationPlaying)
+        //{
+        //    // Mettre à jour le temps d'animation dans le shader
+        //    float animationTime = DirectionUI.material.GetFloat("Anim");
+        //    animationTime += Time.deltaTime;
+        //    DirectionUI.material.SetFloat("Anim", animationTime);
+
+        //    // Vérifier si l'animation est terminée
+        //    if (animationTime >= 1.0f)
+        //    {
+        //        // L'animation est terminée, faire quelque chose
+        //        isShaderAnimationPlaying = false;
+        //        //DoSomethingAtEndOfAnimation();
+        //    }
+        //}
     }
 
     private void AfficherNouvelleImage()
@@ -111,77 +155,79 @@ public class MiniJeu1 : MonoBehaviour
             //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
             anim_Classement.SetTrigger("ClassementActive");
             txt_instruction.text = "Fin du jeu";
+
+            miniJeu2Active = true;
+            StartCoroutine(MiniJeu2());
         }
     }
 
     private IEnumerator GererDelaiAvantChangement()
     {
         //MettreAJourAffichageTour();
-
-
-        txt_instruction.text = "Find a caption to this meme !";
-        anim_Image.SetTrigger("Down");
-
-
-        yield return new WaitForSeconds(5f);
-
-
-        txt_instruction.text = "Time's up, give your answer !";
-        iF_Reponses.gameObject.SetActive(true);
-        yield return new WaitUntil(() => TousLesJoueursOntRepondu());
-        yield return new WaitForSeconds(2f);
-        iF_Reponses.gameObject.SetActive(false);
-        txt_instruction.text = "Let's see everybody's answers !";
-        anim_Reponse.SetTrigger("UpForReponse");
-
-        foreach (int numberAnswer in excludesNumber)
+        if(miniJeu1Active == true)
         {
-            txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
-            yield return new WaitForSeconds(3f);
-        }
-        //mettre les reponse en aleatoire chacun leurs tours
+            txt_instruction.text = "Find a caption to this meme !";
+            anim_Image.SetTrigger("Down");
+            //playShaderAnim = true;
+
+
+            yield return new WaitForSeconds(5f);
+
+            //playShaderAnim = false;
+            txt_instruction.text = "Time's up, give your answer !";
+            iF_Reponses.gameObject.SetActive(true);
+            yield return new WaitUntil(() => TousLesJoueursOntRepondu());
+            yield return new WaitForSeconds(2f);
+            iF_Reponses.gameObject.SetActive(false);
+            txt_instruction.text = "Let's see everybody's answers !";
+            anim_Reponse.SetTrigger("UpForReponse");
+
+            foreach (int numberAnswer in excludesNumber)
+            {
+                txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
+                yield return new WaitForSeconds(8f);
+            }
 
 
 
 
-        txt_instruction.text = "It's time to vote !";
-        yield return new WaitForSeconds(1f);
-        anim_Image.SetTrigger("UpImageReponse");
+
+            txt_instruction.text = "It's time to vote !";
+            yield return new WaitForSeconds(1f);
+            anim_Image.SetTrigger("UpImageReponse");
 
 
-        anim_Reponse.SetTrigger("DownReponse");
-        button1.SetActive(true);
-        button2.SetActive(true);
-        button3.SetActive(true);
-        button4.SetActive(true);
-        txt_instruction.text = "";
-        yield return new WaitForSeconds(1f);
-        MettreAJourAffichageTour();
-        yield return new WaitUntil(() => TousLesJoueursOntVote());
+            anim_Reponse.SetTrigger("DownReponse");
+            button1.SetActive(true);
+            button2.SetActive(true);
+            button3.SetActive(true);
+            button4.SetActive(true);
+            txt_instruction.text = "";
+            yield return new WaitForSeconds(1f);
+            MettreAJourAffichageTour();
+            yield return new WaitUntil(() => TousLesJoueursOntVote());
 
-        int joueurGagnant = TrouverJoueurGagnant();
-        Debug.Log(joueurGagnant);
-        AttribuerPoints(joueurGagnant);
-        txt_instruction.text = "C'est " + joueurGagnant + " qui a gagner cette manche !";
+            int joueurGagnant = TrouverJoueurGagnant();
+            Debug.Log(joueurGagnant);
+            AttribuerPoints(joueurGagnant);
+            txt_instruction.text = "C'est " + joueurGagnant + " qui a gagner cette manche !";
 
 
-        anim_Image.SetTrigger("Up");
-        imagesUtilisees.Add(imageCourante);
-        yield return new WaitForSeconds(2f);
-        button1.SetActive(false);
-        button2.SetActive(false);
-        button3.SetActive(false);
-        button4.SetActive(false);
+            anim_Image.SetTrigger("Up");
+            imagesUtilisees.Add(imageCourante);
+            yield return new WaitForSeconds(2f);
+            button1.SetActive(false);
+            button2.SetActive(false);
+            button3.SetActive(false);
+            button4.SetActive(false);
 
-        yield return new WaitForSeconds(5f);
-        AfficherNouvelleImage();
-        joueursAyantVote = 0;
+            yield return new WaitForSeconds(5f);
+            AfficherNouvelleImage();
+            joueursAyantVote = 0;
+        }        
     }
 
-    private void InitieImage(ImageMemeData data)
-    {
-        SetMaskableGraphicValue(ref image, data.imageMeme);
-    }
+    
 
     private void InitieInfo()
     {
@@ -212,6 +258,10 @@ public class MiniJeu1 : MonoBehaviour
         playerName4.text = joueursDatas[3].JoueursName.ToString();
 
     }
+    private void InitieImage(ImageMemeData data)
+    {
+        SetMaskableGraphicValue(ref image, data.imageMeme);
+    }
 
     private void SetMaskableGraphicValue(ref MaskableGraphic mg, object value)
     {
@@ -229,10 +279,6 @@ public class MiniJeu1 : MonoBehaviour
         txt_instruction.text = "C'est au tour de " + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.";
     }
 
-    private void ShowAnswer()
-    {
-        
-    }
 
     private void Vote(int numeroJoueur)
     {
@@ -337,4 +383,40 @@ public class MiniJeu1 : MonoBehaviour
         }
         return number;
     }
+
+
+    private IEnumerator MiniJeu2()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (miniJeu2Active == true)
+        {
+            anim_Reponse.SetTrigger("UpForReponse");
+            txt_instruction.text = "Now it's Time for our second game !";
+            yield return new WaitForSeconds(3f);
+            txt_instruction.text = "Are you ready ?";
+
+            buttonContinueJeu2.SetActive(true);
+
+            if(goForJeu2 == true)
+            {
+                txt_instruction.text = " Now let's do a little acting :)";
+            }
+        }
+    }
+
+
+    private void NextJeu()
+    {
+        miniJeu2Active = true;        
+    }
+
+    private void ContinueJeu2()
+    {
+        buttonContinueJeu2.SetActive(false);
+        goForJeu2 = true;
+    }
+
+
+    
 }

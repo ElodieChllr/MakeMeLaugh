@@ -13,5 +13,7 @@ public class JoueursData
     public string answer;
 
     public int score;
+
+    public Sprite logoJoueur;
 }
 
