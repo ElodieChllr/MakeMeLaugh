@@ -17,9 +17,11 @@ public class MiniJeu1 : MonoBehaviour
     public InputField iF_Reponses;
 
     int[] votes = new int[4];
+    List<int> excludesNumber = new List<int>();
 
-    public GameObject boutonJoueurPrefab;
+    public GameObject classementFinal;
 
+    public Animator anim_Classement;
     public Animator anim_Reponse;
     public Animator anim_Image;
 
@@ -33,6 +35,7 @@ public class MiniJeu1 : MonoBehaviour
     private HashSet<ImageMemeData> imagesUtilisees = new HashSet<ImageMemeData>();
     private ImageMemeData imageCourante;
 
+   
 
     [Header("Button")]
     public Button boutonJoueur1;
@@ -40,7 +43,10 @@ public class MiniJeu1 : MonoBehaviour
     public Button boutonJoueur3;
     public Button boutonJoueur4;
 
-    [Header("ScorePlayer")]
+    public Button[] boutonJoueurs;
+    
+
+    [Header("ScorePlayers")]
     public Text playerScore1;
     public Text playerScore2;        
     public Text playerScore3;
@@ -51,6 +57,12 @@ public class MiniJeu1 : MonoBehaviour
     public GameObject button2;
     public GameObject button3;
     public GameObject button4;
+
+    [Header("PlayersName")]
+    public Text playerName1;
+    public Text playerName2;
+    public Text playerName3;
+    public Text playerName4;
 
     private bool TousLesJoueursOntVote()
     {
@@ -68,14 +80,14 @@ public class MiniJeu1 : MonoBehaviour
         joueursDatas.AddRange(joueursDataBaseRef.datas);
         AfficherNouvelleImage();
 
-
+        /*
         boutonJoueur1.onClick.AddListener(() => Vote(1));
         boutonJoueur2.onClick.AddListener(() => Vote(2));
         boutonJoueur3.onClick.AddListener(() => Vote(3));
         boutonJoueur4.onClick.AddListener(() => Vote(4));
+        */
 
-
-        InitieButton();
+        InitieInfo();
 
     }
 
@@ -92,13 +104,19 @@ public class MiniJeu1 : MonoBehaviour
         }
         else
         {
+            //remonter image
+            anim_Image.SetTrigger("Up");
+            //afficher texte pour dire : voici le score, 
+            txt_instruction.text = "And now evreybody's scores !";
+            //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
+            anim_Classement.SetTrigger("ClassementActive");
             txt_instruction.text = "Fin du jeu";
         }
     }
 
     private IEnumerator GererDelaiAvantChangement()
     {
-        MettreAJourAffichageTour();
+        //MettreAJourAffichageTour();
 
 
         txt_instruction.text = "Find a caption to this meme !";
@@ -115,21 +133,30 @@ public class MiniJeu1 : MonoBehaviour
         iF_Reponses.gameObject.SetActive(false);
         txt_instruction.text = "Let's see everybody's answers !";
         anim_Reponse.SetTrigger("UpForReponse");
-        //txt_instruction.text = joueursDatas[0].score.ToString();
 
-        //yield return new WaitForSeconds(5f);
-        
+        foreach (int numberAnswer in excludesNumber)
+        {
+            txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
+            yield return new WaitForSeconds(3f);
+        }
+        //mettre les reponse en aleatoire chacun leurs tours
+
+
 
 
         txt_instruction.text = "It's time to vote !";
         yield return new WaitForSeconds(1f);
-        
-        
+        anim_Image.SetTrigger("UpImageReponse");
 
-        //button1.SetActive(true);
-        //button2.SetActive(true);
-        //button3.SetActive(true);
-        //button4.SetActive(true);
+
+        anim_Reponse.SetTrigger("DownReponse");
+        button1.SetActive(true);
+        button2.SetActive(true);
+        button3.SetActive(true);
+        button4.SetActive(true);
+        txt_instruction.text = "";
+        yield return new WaitForSeconds(1f);
+        MettreAJourAffichageTour();
         yield return new WaitUntil(() => TousLesJoueursOntVote());
 
         int joueurGagnant = TrouverJoueurGagnant();
@@ -139,7 +166,6 @@ public class MiniJeu1 : MonoBehaviour
 
 
         anim_Image.SetTrigger("Up");
-        anim_Reponse.SetTrigger("DownReponse");
         imagesUtilisees.Add(imageCourante);
         yield return new WaitForSeconds(2f);
         button1.SetActive(false);
@@ -157,17 +183,34 @@ public class MiniJeu1 : MonoBehaviour
         SetMaskableGraphicValue(ref image, data.imageMeme);
     }
 
-    private void InitieButton()
+    private void InitieInfo()
     {
-        boutonJoueur1.GetComponentInChildren<Text>().text = joueursDatas[0].JoueursName;
-        boutonJoueur2.GetComponentInChildren<Text>().text = joueursDatas[1].JoueursName;
-        boutonJoueur3.GetComponentInChildren<Text>().text = joueursDatas[2].JoueursName;
-        boutonJoueur4.GetComponentInChildren<Text>().text = joueursDatas[3].JoueursName;
-
+        foreach(Button boutonJoueur in boutonJoueurs)
+        {
+            int randomNumberPos = randomNumberExclude(0, 4, excludesNumber);
+            excludesNumber.Add(randomNumberPos);
+            boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
+            boutonJoueur.onClick.RemoveAllListeners();
+            boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos));
+        }
+        //excludesNumber.Clear();
+        /*
+        boutonJoueur1.GetComponentInChildren<Text>().text = joueursDatas[0].answer;
+        boutonJoueur2.GetComponentInChildren<Text>().text = joueursDatas[1].answer;
+        boutonJoueur3.GetComponentInChildren<Text>().text = joueursDatas[2].answer;
+        boutonJoueur4.GetComponentInChildren<Text>().text = joueursDatas[3].answer;
+        */
         playerScore1.text = joueursDatas[0].score.ToString();
         playerScore2.text = joueursDatas[1].score.ToString();
         playerScore3.text = joueursDatas[2].score.ToString();
         playerScore4.text = joueursDatas[3].score.ToString();
+
+
+        playerName1.text = joueursDatas[0].JoueursName.ToString();
+        playerName2.text = joueursDatas[1].JoueursName.ToString();
+        playerName3.text = joueursDatas[2].JoueursName.ToString();
+        playerName4.text = joueursDatas[3].JoueursName.ToString();
+
     }
 
     private void SetMaskableGraphicValue(ref MaskableGraphic mg, object value)
@@ -182,17 +225,19 @@ public class MiniJeu1 : MonoBehaviour
     private void MettreAJourAffichageTour()
     {
         //MarchePas
-        //txt_instruction.text = "C'est au tour de " + JoueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.";
+        Debug.Log("C'est au tour de" + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.");
+        txt_instruction.text = "C'est au tour de " + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.";
     }
 
     private void ShowAnswer()
     {
-        //Random.Range(0,joueursDatas.Count)]
-
+        
     }
 
     private void Vote(int numeroJoueur)
     {
+        //MettreAJourAffichageTour();
+        
         if (numeroJoueur != joueurtourActuel)
         {
             Debug.Log("Joueur " + joueurtourActuel + " a voté pour le joueur " + numeroJoueur);
@@ -228,13 +273,12 @@ public class MiniJeu1 : MonoBehaviour
         {
             joueursAyantRepondu++;
             MettreAJourInstruction();
-            iF_Reponses.text = ""; // Effacez le champ de saisie pour le joueur suivant
+            iF_Reponses.text = "";
         }
         else
         {
             txt_instruction.text = "All the players gived their answers !";
             joueursAyantRepondu = 4;
-            // Vous pouvez ajouter ici une logique pour commencer le jeu
         }
     }
     private int TrouverJoueurGagnant()
@@ -255,7 +299,6 @@ public class MiniJeu1 : MonoBehaviour
 
     private void AttribuerPoints(int joueurGagnant)
     {
-        //txt_instruction.text = "Joueur " + joueurGagnant + " remporte les points!";
         Debug.Log("Joueur " + joueurGagnant + " remporte les points!");
 
         if (joueurGagnant >= 1 && joueurGagnant <= joueursDatas.Count)
@@ -281,8 +324,17 @@ public class MiniJeu1 : MonoBehaviour
         if (numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
             joueursDataBaseRef.datas[numeroJoueurActuel].answer = answer;
+            Debug.Log(numeroJoueurActuel + " a repondu : " + answer);
         }
     }
 
-
+    int randomNumberExclude(int min, int max, List<int> Exclude)
+    {
+        int number = Random.Range(min, max);
+        while (Exclude.Contains(number))
+        {
+            number = Random.Range(min, max);
+        }
+        return number;
+    }
 }
