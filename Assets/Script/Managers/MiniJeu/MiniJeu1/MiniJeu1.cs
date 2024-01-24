@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MiniJeu1 : MonoBehaviour
 {
     public GameObject GO_Image;
-    public GameObject buttonContinueJeu2;
+    
     public MaskableGraphic image;
     public Text txt_instruction;
     private int joueurtourActuel = 1;
@@ -16,6 +16,7 @@ public class MiniJeu1 : MonoBehaviour
     private int numeroJoueurActuel = 0;
     //private float HoldTimer = 9;
 
+    public MiniJeu2 miniJeu2Ref;
 
     private Text timer;
     public InputField iF_Reponses;
@@ -25,8 +26,6 @@ public class MiniJeu1 : MonoBehaviour
     private bool playShaderAnim = false;
 
     public bool miniJeu1Active = true;
-    public bool miniJeu2Active = false;
-    private bool goForJeu2 = false;
 
     int[] votes = new int[4];
     List<int> excludesNumber = new List<int>();
@@ -156,8 +155,8 @@ public class MiniJeu1 : MonoBehaviour
             anim_Classement.SetTrigger("ClassementActive");
             txt_instruction.text = "Fin du jeu";
 
-            miniJeu2Active = true;
-            StartCoroutine(MiniJeu2());
+            miniJeu2Ref.miniJeu2Active = true;
+            //StartCoroutine(MiniJeu2());
         }
     }
 
@@ -181,6 +180,16 @@ public class MiniJeu1 : MonoBehaviour
             iF_Reponses.gameObject.SetActive(false);
             txt_instruction.text = "Let's see everybody's answers !";
             anim_Reponse.SetTrigger("UpForReponse");
+
+
+            foreach (Button boutonJoueur in boutonJoueurs)
+            {
+                int randomNumberPos = randomNumberExclude(0, 4, excludesNumber);
+                excludesNumber.Add(randomNumberPos);
+                boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
+                boutonJoueur.onClick.RemoveAllListeners();
+                boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos));
+            }
 
             foreach (int numberAnswer in excludesNumber)
             {
@@ -231,14 +240,7 @@ public class MiniJeu1 : MonoBehaviour
 
     private void InitieInfo()
     {
-        foreach(Button boutonJoueur in boutonJoueurs)
-        {
-            int randomNumberPos = randomNumberExclude(0, 4, excludesNumber);
-            excludesNumber.Add(randomNumberPos);
-            boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
-            boutonJoueur.onClick.RemoveAllListeners();
-            boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos));
-        }
+        
         //excludesNumber.Clear();
         /*
         boutonJoueur1.GetComponentInChildren<Text>().text = joueursDatas[0].answer;
@@ -385,38 +387,5 @@ public class MiniJeu1 : MonoBehaviour
     }
 
 
-    private IEnumerator MiniJeu2()
-    {
-        yield return new WaitForSeconds(3f);
-
-        if (miniJeu2Active == true)
-        {
-            anim_Reponse.SetTrigger("UpForReponse");
-            txt_instruction.text = "Now it's Time for our second game !";
-            yield return new WaitForSeconds(3f);
-            txt_instruction.text = "Are you ready ?";
-
-            buttonContinueJeu2.SetActive(true);
-
-            if(goForJeu2 == true)
-            {
-                txt_instruction.text = " Now let's do a little acting :)";
-            }
-        }
-    }
-
-
-    private void NextJeu()
-    {
-        miniJeu2Active = true;        
-    }
-
-    private void ContinueJeu2()
-    {
-        buttonContinueJeu2.SetActive(false);
-        goForJeu2 = true;
-    }
-
-
-    
+      
 }
