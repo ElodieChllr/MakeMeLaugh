@@ -50,8 +50,7 @@ public class PlayerName : MonoBehaviour
         if(numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
             joueursDataBaseRef.datas[numeroJoueurActuel].JoueursName = nom;
-            joueursDataBaseRef.datas[numeroJoueurActuel].score += 5000;
-
+            //joueursDataBaseRef.datas[numeroJoueurActuel].score += 5000;
         }
     }
 

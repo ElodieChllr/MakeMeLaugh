@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: Joueurs
   m_EditorClassIdentifier: 
   datas:
-  - JoueursName: Joueur 1
+  - JoueursName: sdfghjk
     Play: 0
     answer: 
     score: 0
-  - JoueursName: Joueur 2
+  - JoueursName: pouette
     Play: 0
     answer: 
     score: 0
-  - JoueursName: Joueur 3
+  - JoueursName: pioiu
     Play: 0
     answer: 
     score: 0
-  - JoueursName: Joueur 4
+  - JoueursName: n
     Play: 0
     answer: 
     score: 0
