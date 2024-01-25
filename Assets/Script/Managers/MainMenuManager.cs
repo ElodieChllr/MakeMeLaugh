@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class MainMenuManager : MonoBehaviour
 {
-    public GameObject pnl_NbJoueurs;
     public GameObject pnl_MainMenu;
     public GameObject pnl_JoueursName;
 
     public GameObject backgroundSound;
+
+    public Animator backToMainMenu;
+
+    public GameObject logoJeux;
 
     [Header("Data")]
     public JoueursDataBase joueursDataBaseRef;
@@ -22,7 +26,12 @@ public class MainMenuManager : MonoBehaviour
     }
     void Start()
     {
-        
+        joueursDatas.AddRange(joueursDataBaseRef.datas);
+
+        if (GameManager.backToMainMenu == true)
+        {
+            backToMainMenu.SetTrigger("OnMainMenu");
+        }
     }
 
     // Update is called once per frame
@@ -33,12 +42,15 @@ public class MainMenuManager : MonoBehaviour
 
     public void GoToMainMenu()
     {
+        
         pnl_MainMenu.SetActive(true);
+        logoJeux.SetActive(true);
         pnl_JoueursName.SetActive(false);
     }
     public void GoToJoueursName()
     {
         pnl_MainMenu.SetActive(false);
+        logoJeux.SetActive(false);
         pnl_JoueursName.SetActive(true);
     }
 
@@ -53,8 +65,13 @@ public class MainMenuManager : MonoBehaviour
     }
 
 
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 
-    
+
+
 
 
     IEnumerator wait()

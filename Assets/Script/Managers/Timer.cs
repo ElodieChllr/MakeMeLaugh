@@ -6,8 +6,12 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     [SerializeField] Text txt_timer;
-    [SerializeField] float remainingTime;
+    public float remainingTime;
 
+    public AudioSource timerSound;
+    public bool startTimer = false;
+
+    
     public bool NoTime = false;
     void Start()
     {
@@ -17,18 +21,24 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(remainingTime > 0)
+
+
+        if (startTimer == true)
         {
             remainingTime -= Time.deltaTime;
-        }
-        else if(remainingTime < 30)
-        {
-            //remainingTime = 0;
-            txt_timer.color = Color.red;
-        }
-        else if( remainingTime < 0)
-        {
-            NoTime = true;
+
+            if (remainingTime < 0)
+            {
+                remainingTime = 0;
+                NoTime = true;
+                timerSound.Stop();
+
+                // Ajoutez ici toute logique supplémentaire lorsque le temps atteint 0
+            }
+            else
+            {
+                timerSound.Play();
+            }
         }
 
         int minutes = Mathf.FloorToInt(remainingTime / 60);

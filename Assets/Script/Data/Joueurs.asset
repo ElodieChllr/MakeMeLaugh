@@ -13,23 +13,23 @@ MonoBehaviour:
   m_Name: Joueurs
   m_EditorClassIdentifier: 
   datas:
-  - JoueursName: Mart1
+  - JoueursName: Joueur 1
     Play: 0
     answer: 
-    score: 1000
+    score: 0
     logoJoueur: {fileID: 21300000, guid: b54f9551d17989346ae1996b063b3407, type: 3}
-  - JoueursName: JeanEude
+  - JoueursName: Joueur 2
     Play: 0
     answer: 
-    score: 90
+    score: 0
     logoJoueur: {fileID: 21300000, guid: f35e4b971cf88914ba0371be2fcb99f5, type: 3}
-  - JoueursName: PierreRocher
+  - JoueursName: 'Joueur 3 '
     Play: 0
     answer: 
-    score: 80
+    score: 0
     logoJoueur: {fileID: 21300000, guid: 76c1c68079b0a4a41afdc5f5255ed2f1, type: 3}
-  - JoueursName: SachaDeBourpalette
+  - JoueursName: 'Joueur 4 '
     Play: 0
     answer: 
-    score: 500000
+    score: 0
     logoJoueur: {fileID: 21300000, guid: cf717a59b3225494186e754533f93c52, type: 3}

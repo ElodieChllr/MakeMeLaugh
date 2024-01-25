@@ -17,6 +17,11 @@ public class MiniJeu1 : MonoBehaviour
     private int numeroJoueurActuel = 0;
     //private float HoldTimer = 9;
 
+    public Timer timerRef;
+    public GameObject GO_timer;
+
+    public Image logoJoueur;
+
     //public MiniJeu2 miniJeu2Ref;
     public GameObject miniJeu1Manager;
     public GameObject miniJeu2Manager;
@@ -77,10 +82,8 @@ public class MiniJeu1 : MonoBehaviour
     public Text playerName3;
     public Text playerName4;
 
-    private bool TousLesJoueursOntVote()
-    {
-        return joueursAyantVote == 4;
-    }
+    private bool TousLesJoueursOntVote() => joueursAyantVote == 4;
+    
     private bool TousLesJoueursOntRepondu()
     {
         return joueursAyantRepondu == 4;
@@ -93,7 +96,7 @@ public class MiniJeu1 : MonoBehaviour
         joueursDatas.AddRange(joueursDataBaseRef.datas);
         AfficherNouvelleImage();
 
-
+        
 
         /*
         boutonJoueur1.onClick.AddListener(() => Vote(1));
@@ -113,6 +116,8 @@ public class MiniJeu1 : MonoBehaviour
 
     private void AfficherNouvelleImage()
     {
+        StopAllCoroutines();
+        excludesNumber.Clear();
         List<ImageMemeData> imagesNonUtilisees = imageDatas.FindAll(img => !imagesUtilisees.Contains(img));
         if (imagesNonUtilisees.Count > 0)
         {
@@ -127,11 +132,12 @@ public class MiniJeu1 : MonoBehaviour
             //remonter image
             anim_Image.SetTrigger("Up");
             //afficher texte pour dire : voici le score, 
-            txt_instruction.text = "And now evreybody's scores !";
+            txt_instruction.text = "And now everybody's scores !";
             //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
             anim_Classement.SetTrigger("ClassementActive");
             entre2.Play();
-            txt_instruction.text = "Fin du jeu";
+            anim_Reponse.SetTrigger("DownReponse");
+            txt_instruction.text = "First Classement";
 
 
             ///miniJeu2Ref.miniJeu2Active = true;
@@ -150,16 +156,30 @@ public class MiniJeu1 : MonoBehaviour
             //playShaderAnim = true;
 
             
-            yield return new WaitForSeconds(8f);
+            yield return new WaitForSeconds(1f);
+            GO_timer.SetActive(true);
+            timerRef.remainingTime = 30;
+            timerRef.startTimer = true;
+            yield return new WaitForSeconds(30f);
+            GO_timer.SetActive(false);
+            timerRef.startTimer = false;
+            
+
 
             //playShaderAnim = false;
             txt_instruction.text = "Time's up, whrite your answers !";
+            iF_Reponses.text = "";
             iF_Reponses.gameObject.SetActive(true);
+            logoJoueur.gameObject.SetActive(true);
             yield return new WaitUntil(() => TousLesJoueursOntRepondu());
             yield return new WaitForSeconds(2f);
+            numeroJoueurActuel = 0;
+            //InitieImage();
+            logoJoueur.gameObject.SetActive(false);
             iF_Reponses.gameObject.SetActive(false);
+
             txt_instruction.text = "Let's see everybody's answers !";
-            anim_Reponse.SetTrigger("UpForReponse");
+            //anim_Reponse.SetTrigger("UpForReponse");
 
 
             foreach (Button boutonJoueur in boutonJoueurs)
@@ -168,7 +188,7 @@ public class MiniJeu1 : MonoBehaviour
                 excludesNumber.Add(randomNumberPos);
                 boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
                 boutonJoueur.onClick.RemoveAllListeners();
-                boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos));
+                boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos+1));
             }
 
             foreach (int numberAnswer in excludesNumber)
@@ -187,14 +207,19 @@ public class MiniJeu1 : MonoBehaviour
 
 
             anim_Reponse.SetTrigger("DownReponse");
+            yield return new WaitForSeconds(2f);
             button1.SetActive(true);
             button2.SetActive(true);
             button3.SetActive(true);
             button4.SetActive(true);
             txt_instruction.text = "";
-            yield return new WaitForSeconds(1f);
-            MettreAJourAffichageTour();
+            //yield return new WaitForSeconds(1f);
+            //logoJoueur.gameObject.SetActive(true);
             yield return new WaitUntil(() => TousLesJoueursOntVote());
+            txt_instruction.text = "Everyone has voted";
+            //logoJoueur.gameObject.SetActive(false);
+            Debug.Log("ye");
+            yield return new WaitForSeconds(2f);
 
             int joueurGagnant = TrouverJoueurGagnant();
             Debug.Log(joueurGagnant);
@@ -210,9 +235,11 @@ public class MiniJeu1 : MonoBehaviour
             button3.SetActive(false);
             button4.SetActive(false);
 
-            yield return new WaitForSeconds(5f);
-            AfficherNouvelleImage();
+            yield return new WaitForSeconds(2f);
             joueursAyantVote = 0;
+            joueursAyantRepondu = 0;
+            AfficherNouvelleImage();
+            yield return null;           
         }        
     }
 
@@ -254,11 +281,26 @@ public class MiniJeu1 : MonoBehaviour
         }
     }
 
-    private void MettreAJourAffichageTour()
+    //private void MettreAJourAffichageTour()
+    //{
+        
+
+
+
+    //    string logoJoueur = logoJoueur;
+    //    EnregistrerNomDansDataBase(nomJoueur);
+    //}
+
+    private void InitieImage()
     {
-        //MarchePas
-        Debug.Log("C'est au tour de" + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.");
-        txt_instruction.text = "It's" + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + "'s turn to vote.";
+        if (numeroJoueurActuel < joueursDataBaseRef.datas.Count)
+        {
+            JoueursData joueurActuel = joueursDataBaseRef.datas[numeroJoueurActuel];
+            if (logoJoueur != null && joueurActuel != null)
+            {
+                logoJoueur.sprite = joueurActuel.logoJoueur;
+            }
+        }
     }
 
 
@@ -272,11 +314,12 @@ public class MiniJeu1 : MonoBehaviour
 
             // Mettre à jour le tableau votes
             votes[numeroJoueur - 1]++;
+            InitieImage();
 
             if (joueurtourActuel == 4)
-            {
-                txt_instruction.text = "Everyone has voted";
+            {              
                 joueursAyantVote = 4;
+                return;
             }
 
             joueurtourActuel++;
@@ -294,10 +337,12 @@ public class MiniJeu1 : MonoBehaviour
 
     public void SoumettreReponse()
     {
+        //InitieImage();
         string reponseJoueur = iF_Reponses.text;
         EnregistrerReponses(reponseJoueur);
 
         numeroJoueurActuel++;
+        InitieImage();
         if (numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
             joueursAyantRepondu++;
@@ -366,7 +411,5 @@ public class MiniJeu1 : MonoBehaviour
         }
         return number;
     }
-
-
       
 }
