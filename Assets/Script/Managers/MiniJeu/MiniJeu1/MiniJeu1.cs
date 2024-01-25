@@ -130,20 +130,20 @@ public class MiniJeu1 : MonoBehaviour
         }
         else
         {
-            ////remonter image
-            //anim_Image.SetTrigger("Up");
-            ////afficher texte pour dire : voici le score, 
-            //txt_instruction.text = "And now everybody's scores !";
-            ////afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
-            //anim_Classement.SetTrigger("ClassementActive");
-            //entre2.Play();
-            //anim_Reponse.SetTrigger("DownReponse");
-            //txt_instruction.text = "First Classement";
+            //remonter image
+            anim_Image.SetTrigger("Up");
+            //afficher texte pour dire : voici le score, 
+            txt_instruction.text = "And now everybody's scores !";
+            //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
+            anim_Classement.SetTrigger("ClassementActive");
+            entre2.Play();
+            anim_Reponse.SetTrigger("DownReponse");
+            txt_instruction.text = "First Classement";
 
 
-            /////miniJeu2Ref.miniJeu2Active = true;
-            //miniJeu2Manager.SetActive(true);
-            ////StartCoroutine(MiniJeu2());
+            ///miniJeu2Ref.miniJeu2Active = true;
+            miniJeu2Manager.SetActive(true);
+            //StartCoroutine(MiniJeu2());
         }
     }
     private IEnumerator JouerDelaiAvantChangementQuatreFois()
