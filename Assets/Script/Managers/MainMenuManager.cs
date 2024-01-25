@@ -18,7 +18,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(backgroundSound);
+        
     }
     void Start()
     {
