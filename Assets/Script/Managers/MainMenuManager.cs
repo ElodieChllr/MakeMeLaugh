@@ -8,15 +8,18 @@ public class MainMenuManager : MonoBehaviour
     public GameObject pnl_NbJoueurs;
     public GameObject pnl_MainMenu;
     public GameObject pnl_JoueursName;
-    
 
+    public GameObject backgroundSound;
 
     [Header("Data")]
     public JoueursDataBase joueursDataBaseRef;
     //public JoueursData JoueursData;
     [SerializeField] public static List<JoueursData> joueursDatas = new ();
 
-
+    private void Awake()
+    {
+        DontDestroyOnLoad(backgroundSound);
+    }
     void Start()
     {
         
@@ -42,6 +45,10 @@ public class MainMenuManager : MonoBehaviour
     public void PlayGame()
     {
         //StartCoroutine(wait());
+        joueursDatas[0].score = 0;
+        joueursDatas[1].score = 0;
+        joueursDatas[2].score = 0;
+        joueursDatas[3].score = 0;
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 

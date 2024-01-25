@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class MiniJeu1 : MonoBehaviour
 {
@@ -16,14 +17,15 @@ public class MiniJeu1 : MonoBehaviour
     private int numeroJoueurActuel = 0;
     //private float HoldTimer = 9;
 
-    public MiniJeu2 miniJeu2Ref;
+    //public MiniJeu2 miniJeu2Ref;
+    public GameObject miniJeu1Manager;
+    public GameObject miniJeu2Manager;
 
-    private Text timer;
+    public AudioSource entre2;
+
     public InputField iF_Reponses;
 
-    public Image DirectionUI;
-    private bool isShaderAnimationPlaying = false;
-    private bool playShaderAnim = false;
+    
 
     public bool miniJeu1Active = true;
 
@@ -101,37 +103,12 @@ public class MiniJeu1 : MonoBehaviour
         */
 
         InitieInfo();
-        DirectionUI = GetComponentInChildren<Image>();
+        
     }
 
     private void Update()
     {
-        //HoldTimer = -Time.fixedDeltaTime;
-        //DirectionUI.material.SetFloat("Anim", 1 - HoldTimer / 3);
 
-
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    // Activer l'animation ShaderGraph
-        //    isShaderAnimationPlaying = true;
-        //    DirectionUI.material.SetFloat("Anim", 0f); // Réinitialiser le temps d'animation
-        //}
-
-        //if (isShaderAnimationPlaying)
-        //{
-        //    // Mettre à jour le temps d'animation dans le shader
-        //    float animationTime = DirectionUI.material.GetFloat("Anim");
-        //    animationTime += Time.deltaTime;
-        //    DirectionUI.material.SetFloat("Anim", animationTime);
-
-        //    // Vérifier si l'animation est terminée
-        //    if (animationTime >= 1.0f)
-        //    {
-        //        // L'animation est terminée, faire quelque chose
-        //        isShaderAnimationPlaying = false;
-        //        //DoSomethingAtEndOfAnimation();
-        //    }
-        //}
     }
 
     private void AfficherNouvelleImage()
@@ -153,9 +130,12 @@ public class MiniJeu1 : MonoBehaviour
             txt_instruction.text = "And now evreybody's scores !";
             //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
             anim_Classement.SetTrigger("ClassementActive");
+            entre2.Play();
             txt_instruction.text = "Fin du jeu";
 
-            miniJeu2Ref.miniJeu2Active = true;
+
+            ///miniJeu2Ref.miniJeu2Active = true;
+            miniJeu2Manager.SetActive(true);
             //StartCoroutine(MiniJeu2());
         }
     }
@@ -169,11 +149,11 @@ public class MiniJeu1 : MonoBehaviour
             anim_Image.SetTrigger("Down");
             //playShaderAnim = true;
 
-
-            yield return new WaitForSeconds(5f);
+            
+            yield return new WaitForSeconds(8f);
 
             //playShaderAnim = false;
-            txt_instruction.text = "Time's up, give your answer !";
+            txt_instruction.text = "Time's up, whrite your answers !";
             iF_Reponses.gameObject.SetActive(true);
             yield return new WaitUntil(() => TousLesJoueursOntRepondu());
             yield return new WaitForSeconds(2f);
@@ -194,7 +174,7 @@ public class MiniJeu1 : MonoBehaviour
             foreach (int numberAnswer in excludesNumber)
             {
                 txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
-                yield return new WaitForSeconds(8f);
+                yield return new WaitForSeconds(10f);
             }
 
 
@@ -219,7 +199,7 @@ public class MiniJeu1 : MonoBehaviour
             int joueurGagnant = TrouverJoueurGagnant();
             Debug.Log(joueurGagnant);
             AttribuerPoints(joueurGagnant);
-            txt_instruction.text = "C'est " + joueurGagnant + " qui a gagner cette manche !";
+            txt_instruction.text = joueurGagnant + " won !";
 
 
             anim_Image.SetTrigger("Up");
@@ -278,14 +258,14 @@ public class MiniJeu1 : MonoBehaviour
     {
         //MarchePas
         Debug.Log("C'est au tour de" + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.");
-        txt_instruction.text = "C'est au tour de " + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + " de voter.";
+        txt_instruction.text = "It's" + joueursDataBaseRef.datas[joueurtourActuel - 1].JoueursName + "'s turn to vote.";
     }
 
 
     private void Vote(int numeroJoueur)
     {
         //MettreAJourAffichageTour();
-        
+
         if (numeroJoueur != joueurtourActuel)
         {
             Debug.Log("Joueur " + joueurtourActuel + " a voté pour le joueur " + numeroJoueur);
@@ -293,16 +273,17 @@ public class MiniJeu1 : MonoBehaviour
             // Mettre à jour le tableau votes
             votes[numeroJoueur - 1]++;
 
-            joueurtourActuel++;
-            if (joueurtourActuel > 4)
+            if (joueurtourActuel == 4)
             {
-                txt_instruction.text = "Tous les joueurs ont voté";
+                txt_instruction.text = "Everyone has voted";
                 joueursAyantVote = 4;
             }
 
-            if (joueurtourActuel == 1)
+            joueurtourActuel++;
+            if (joueurtourActuel == 5)
             {
                 joueursAyantVote++;
+                joueurtourActuel = 1;
             }
         }
         else
@@ -325,7 +306,7 @@ public class MiniJeu1 : MonoBehaviour
         }
         else
         {
-            txt_instruction.text = "All the players gived their answers !";
+            txt_instruction.text = "All the players gave their answers !";
             joueursAyantRepondu = 4;
         }
     }

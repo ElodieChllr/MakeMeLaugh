@@ -10,30 +10,23 @@ public class PlayerName : MonoBehaviour
     public JoueursDataBase joueursDataBaseRef;
     public Text texteInstruction;
 
-    public MaskableGraphic img_logoJoueurs;
+    public Image img_logoJoueurs; // Ajoutez cette référence dans l'éditeur Unity
 
     void Start()
     {
-        //joueursDataBaseRef = GetComponent<JoueursDataBase>();
         MettreAJourInstruction();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        InitieImage();
     }
 
     private void MettreAJourInstruction()
     {
         texteInstruction.text = "Joueur " + (numeroJoueurActuel + 1) + " enter your name";
     }
+
     public void SoumettreNom()
     {
-
         string nomJoueur = champDeSaisie.text;
         EnregistrerNomDansDataBase(nomJoueur);
-        //InitieImage();
 
         numeroJoueurActuel++;
 
@@ -41,6 +34,7 @@ public class PlayerName : MonoBehaviour
         {
             MettreAJourInstruction();
             champDeSaisie.text = ""; // Effacez le champ de saisie pour le joueur suivant
+            InitieImage(); // Mettez à jour le logo après le passage au joueur suivant
         }
         else
         {
@@ -51,26 +45,21 @@ public class PlayerName : MonoBehaviour
 
     private void EnregistrerNomDansDataBase(string nom)
     {
-        if(numeroJoueurActuel < joueursDataBaseRef.datas.Count)
+        if (numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
             joueursDataBaseRef.datas[numeroJoueurActuel].JoueursName = nom;
-            
         }
     }
 
-
-    private void SetMaskableGraphicValue(ref MaskableGraphic mg, object value)
+    private void InitieImage()
     {
-        switch (mg)
+        if (numeroJoueurActuel < joueursDataBaseRef.datas.Count)
         {
-            
-            case Image img: img.sprite = value as Sprite; break;
+            JoueursData joueurActuel = joueursDataBaseRef.datas[numeroJoueurActuel];
+            if (img_logoJoueurs != null && joueurActuel != null)
+            {
+                img_logoJoueurs.sprite = joueurActuel.logoJoueur;
+            }
         }
     }
-
-    private void InitieImage(JoueursData data)
-    {
-        SetMaskableGraphicValue(ref img_logoJoueurs, data.logoJoueur);
-    }
-
 }

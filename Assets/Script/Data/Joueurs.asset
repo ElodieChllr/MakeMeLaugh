@@ -16,20 +16,20 @@ MonoBehaviour:
   - JoueursName: Mart1
     Play: 0
     answer: 
-    score: 0
+    score: 1000
     logoJoueur: {fileID: 21300000, guid: b54f9551d17989346ae1996b063b3407, type: 3}
   - JoueursName: JeanEude
     Play: 0
     answer: 
-    score: 0
+    score: 90
     logoJoueur: {fileID: 21300000, guid: f35e4b971cf88914ba0371be2fcb99f5, type: 3}
   - JoueursName: PierreRocher
     Play: 0
     answer: 
-    score: 0
+    score: 80
     logoJoueur: {fileID: 21300000, guid: 76c1c68079b0a4a41afdc5f5255ed2f1, type: 3}
   - JoueursName: SachaDeBourpalette
     Play: 0
     answer: 
-    score: 0
+    score: 500000
     logoJoueur: {fileID: 21300000, guid: cf717a59b3225494186e754533f93c52, type: 3}
