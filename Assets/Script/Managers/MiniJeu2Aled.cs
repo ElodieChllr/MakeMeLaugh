@@ -16,7 +16,9 @@ public class MiniJeu2Aled : MonoBehaviour
     public Animator anim_Reponse;
     public Animator anim_Classement;
 
-    private int numeroJoueurActuel = 0;
+    //private int numeroJoueurActuel = 0;
+
+    private int nombreDeManchesJouees = 0;
 
     public Image logoJoueur;
 
@@ -89,7 +91,7 @@ public class MiniJeu2Aled : MonoBehaviour
         {
             themeCourant = themesNonUtilisees[Random.Range(0,themesNonUtilisees.Count)];
             InitieThemes(themeCourant);
-            StartCoroutine(miniJeu2());  
+            StartCoroutine(JouerDelaiAvantChangementQuatreFois());  
 
         }
         else
@@ -100,6 +102,18 @@ public class MiniJeu2Aled : MonoBehaviour
 
 
         }
+    }
+
+    private IEnumerator JouerDelaiAvantChangementQuatreFois()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            yield return StartCoroutine(miniJeu2());
+        }
+
+        // Ici, vous pouvez effectuer des actions après avoir joué la coroutine 4 fois
+        // par exemple, afficher un message de fin de jeu.
+        Debug.Log("Le jeu est terminé !");
     }
 
 
@@ -159,6 +173,7 @@ public class MiniJeu2Aled : MonoBehaviour
         //fin et on recommence
         ThemesUtilise.Add(themeCourant);
         yield return new WaitForSeconds(5f);
+        nombreDeManchesJouees++;
         AfficherNouveauThemes();
     }
 
