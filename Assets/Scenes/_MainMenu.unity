@@ -942,38 +942,6 @@ MonoBehaviour:
   backToMainMenu: {fileID: 924782592}
   logoJeux: {fileID: 339478449}
   joueursDataBaseRef: {fileID: 11400000, guid: a8d9d78e432877e4fb2c7136915b0289, type: 2}
---- !u!1 &719878403
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 719878404}
-  m_Layer: 0
-  m_Name: Sound
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &719878404
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 719878403}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1228.9569, y: 1214.3145, z: -33.165726}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1722958949}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &783145980
 GameObject:
   m_ObjectHideFlags: 0
@@ -2194,8 +2162,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1722958949}
-  - component: {fileID: 1722958950}
   - component: {fileID: 1722958951}
+  - component: {fileID: 1722958950}
   m_Layer: 0
   m_Name: MusicBackground
   m_TagString: Untagged
@@ -2211,12 +2179,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1722958948}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1228.9569, y: 1214.3145, z: -33.165726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 719878404}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1722958950
 AudioSource:
@@ -2228,9 +2196,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8d7aabba3aebd6141859167b367af821, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2727,4 +2695,4 @@ SceneRoots:
   - {fileID: 563161110}
   - {fileID: 508821210}
   - {fileID: 853630147}
-  - {fileID: 719878404}
+  - {fileID: 1722958949}

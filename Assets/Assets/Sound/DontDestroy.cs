@@ -7,6 +7,6 @@ public class DontDestroy : MonoBehaviour
     public GameObject backgroundSound;
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(backgroundSound);
     }
 }

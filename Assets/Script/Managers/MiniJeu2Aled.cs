@@ -16,7 +16,7 @@ public class MiniJeu2Aled : MonoBehaviour
     public Animator anim_Reponse;
     public Animator anim_Classement;
 
-    //private int numeroJoueurActuel = 0;
+    private int numeroJoueurActuel = 0;
 
     private int nombreDeManchesJouees = 0;
 
@@ -119,62 +119,69 @@ public class MiniJeu2Aled : MonoBehaviour
 
     private IEnumerator miniJeu2()
     {
-        yield return new WaitForSeconds(8f);
-        //debut
-        anim_Themes.SetTrigger("ThemesGoDown");
-        int joueur1Index = Random.Range(0, joueursDatas.Count);
-        int joueur2Index = Random.Range(0, joueursDatas.Count);
-        
-
-        if (joueursDatas.Count > 0)
+        if (nombreDeManchesJouees != 2)
         {
-            txt_instruction.text = "Its " + joueursDatas[joueur1Index].JoueursName + " and " + joueursDatas[joueur2Index].JoueursName + " who will act";
             yield return new WaitForSeconds(8f);
+            //debut
+            anim_Themes.SetTrigger("ThemesGoDown");
+            int joueur1Index = Random.Range(0, joueursDatas.Count);
+            int joueur2Index = Random.Range(0, joueursDatas.Count);
+            anim_Reponse.SetTrigger("UpForReponse");
+
+            if (joueursDatas.Count > 0)
+            {
+                
+                txt_instruction.text = "Its " + joueursDatas[joueur1Index].JoueursName + " and " + joueursDatas[joueur2Index].JoueursName + " who will act";
+                yield return new WaitForSeconds(8f);
+            }
+            else
+            {
+                Debug.LogError("La liste de joueurs est vide !");
+            }
+            GO_timer.SetActive(true);
+            timerRef.startTimer = true;
+            timerRef.remainingTime = 30;
+            yield return new WaitForSeconds(3f);
+            GO_timer.SetActive(false);
+            timerRef.startTimer = false;
+
+
+            //vote
+            txt_instruction.text = "It's time to vote !";
+            yield return new WaitForSeconds(2f);
+            button1.SetActive(true);
+            button2.SetActive(true);
+            button3.SetActive(true);
+            button4.SetActive(true);
+            txt_instruction.text = "";
+            yield return new WaitForSeconds(1f);
+            logoJoueur.gameObject.SetActive(true);
+            InitieInfo();
+            yield return new WaitUntil(() => TousLesJoueursOntVote2());
+            txt_instruction.text = "Everyone has voted";
+            logoJoueur.gameObject.SetActive(false);
+            yield return new WaitForSeconds(2f);
+
+            //anim_Reponse.SetTrigger("IntructionDown");
+            int joueurGagnant = TrouverJoueurGagnant();
+            Debug.Log(joueurGagnant);
+            AttribuerPoints(joueurGagnant);
+
+            button1.SetActive(false);
+            button2.SetActive(false);
+            button3.SetActive(false);
+            button4.SetActive(false);
+
+            anim_Themes.SetTrigger("ThemesGoUp");
+            //fin et on recommence
+            ThemesUtilise.Add(themeCourant);
+            yield return new WaitForSeconds(5f);
+            joueursAyantVote2 = 0;            
+            joueurtourActuel = 0;
+            nombreDeManchesJouees++;
+            AfficherNouveauThemes();
         }
-        else
-        {
-            Debug.LogError("La liste de joueurs est vide !");
-        }
-        GO_timer.SetActive(true);
-        timerRef.startTimer = true;
-        timerRef.remainingTime = 30;
-        yield return new WaitForSeconds(3f);
-        GO_timer.SetActive(false);
-        timerRef.startTimer = false;
-
-
-        //vote
-        txt_instruction.text = "It's time to vote !";
-        yield return new WaitForSeconds(2f);
-        button1.SetActive(true);
-        button2.SetActive(true);
-        button3.SetActive(true);
-        button4.SetActive(true);
-        txt_instruction.text = "";
-        yield return new WaitForSeconds(1f);
-        logoJoueur.gameObject.SetActive(true);
-        InitieInfo();
-        yield return new WaitUntil(() => TousLesJoueursOntVote2());
-        txt_instruction.text = "Everyone has voted";
-        logoJoueur.gameObject.SetActive(false);
-        yield return new WaitForSeconds(2f);
-
-        //anim_Reponse.SetTrigger("IntructionDown");
-        int joueurGagnant = TrouverJoueurGagnant();
-        Debug.Log(joueurGagnant);
-        AttribuerPoints(joueurGagnant);
-
-        button1.SetActive(false);
-        button2.SetActive(false);
-        button3.SetActive(false);
-        button4.SetActive(false);
-
-        anim_Themes.SetTrigger("ThemesGoUp");
-        //fin et on recommence
-        ThemesUtilise.Add(themeCourant);
-        yield return new WaitForSeconds(5f);
-        nombreDeManchesJouees++;
-        AfficherNouveauThemes();
+           
     }
 
     private void InitieThemes(ThemeActingData data)

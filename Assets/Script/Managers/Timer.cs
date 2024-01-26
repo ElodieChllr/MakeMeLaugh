@@ -25,20 +25,17 @@ public class Timer : MonoBehaviour
 
         if (startTimer == true)
         {
+            timerSound.Play();
             remainingTime -= Time.deltaTime;
 
-            if (remainingTime < 0)
+            if (remainingTime < 5)
             {
                 remainingTime = 0;
                 NoTime = true;
                 timerSound.Stop();
 
                 // Ajoutez ici toute logique supplémentaire lorsque le temps atteint 0
-            }
-            else
-            {
-                timerSound.Play();
-            }
+            }            
         }
 
         int minutes = Mathf.FloorToInt(remainingTime / 60);

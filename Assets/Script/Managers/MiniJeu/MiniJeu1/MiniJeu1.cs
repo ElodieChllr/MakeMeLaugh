@@ -126,10 +126,135 @@ public class MiniJeu1 : MonoBehaviour
             InitieImage(imageCourante);
 
 
-            StartCoroutine(JouerDelaiAvantChangementQuatreFois());
+            StartCoroutine(GererDelaiAvantChangement());
         }
         else
         {
+            
+        }
+    }
+    //private IEnumerator JouerDelaiAvantChangementQuatreFois()
+    //{
+    //    for (int i = 0; i < 2; i++)
+    //    {
+    //        yield return StartCoroutine(GererDelaiAvantChangement());
+    //    }
+
+    //    //remonter image
+    //    anim_Image.SetTrigger("Up");
+    //    //afficher texte pour dire : voici le score, 
+    //    txt_instruction.text = "And now everybody's scores !";
+    //    //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
+    //    anim_Classement.SetTrigger("ClassementActive");
+    //    entre2.Play();
+    //    anim_Reponse.SetTrigger("DownReponse");
+    //    txt_instruction.text = "First Classement";
+
+
+    //    ///miniJeu2Ref.miniJeu2Active = true;
+    //    miniJeu2Manager.SetActive(true);
+    //    //StartCoroutine(MiniJeu2());
+    //}
+    private IEnumerator GererDelaiAvantChangement()
+    {
+        //MettreAJourAffichageTour();
+        if(miniJeu1Active == true)
+        {
+            if(nombreDeManchesJouees != 2)
+            {
+                txt_instruction.text = "Find a caption to this meme !";
+                anim_Image.SetTrigger("Down");
+                //playShaderAnim = true;
+
+
+                yield return new WaitForSeconds(1f);
+                GO_timer.SetActive(true);
+                timerRef.remainingTime = 30;
+                timerRef.startTimer = true;
+                yield return new WaitForSeconds(30f);
+                GO_timer.SetActive(false);
+                timerRef.startTimer = false;
+
+
+
+                //playShaderAnim = false;
+                txt_instruction.text = "Time's up, whrite your answers !";
+                iF_Reponses.text = "";
+                iF_Reponses.gameObject.SetActive(true);
+                logoJoueur.gameObject.SetActive(true);
+                yield return new WaitUntil(() => TousLesJoueursOntRepondu());
+                yield return new WaitForSeconds(2f);
+                numeroJoueurActuel = 0;
+                //InitieImage();
+                logoJoueur.gameObject.SetActive(false);
+                iF_Reponses.gameObject.SetActive(false);
+
+                txt_instruction.text = "Let's see everybody's answers !";
+                //anim_Reponse.SetTrigger("UpForReponse");
+
+
+                foreach (Button boutonJoueur in boutonJoueurs)
+                {
+                    int randomNumberPos = randomNumberExclude(0, 4, excludesNumber);
+                    excludesNumber.Add(randomNumberPos);
+                    boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
+                    boutonJoueur.onClick.RemoveAllListeners();
+                    boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos + 1));
+                }
+
+                foreach (int numberAnswer in excludesNumber)
+                {
+                    txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
+                    yield return new WaitForSeconds(8f);
+                }
+
+
+
+
+
+                txt_instruction.text = "It's time to vote !";
+                yield return new WaitForSeconds(1f);
+                anim_Image.SetTrigger("UpImageReponse");
+
+
+                anim_Reponse.SetTrigger("DownReponse");
+                yield return new WaitForSeconds(2f);
+                button1.SetActive(true);
+                button2.SetActive(true);
+                button3.SetActive(true);
+                button4.SetActive(true);
+                txt_instruction.text = "";
+                //yield return new WaitForSeconds(1f);
+                //logoJoueur.gameObject.SetActive(true);
+                yield return new WaitUntil(() => TousLesJoueursOntVote());
+                txt_instruction.text = "Everyone has voted";
+                //logoJoueur.gameObject.SetActive(false);
+                Debug.Log("ye");
+                yield return new WaitForSeconds(2f);
+
+                int joueurGagnant = TrouverJoueurGagnant();
+                Debug.Log(joueurGagnant);
+                AttribuerPoints(joueurGagnant);
+                txt_instruction.text = joueurGagnant + " won !";
+
+                anim_Reponse.SetTrigger("UpForReponse");
+                anim_Image.SetTrigger("Up");
+                imagesUtilisees.Add(imageCourante);
+                yield return new WaitForSeconds(2f);
+                button1.SetActive(false);
+                button2.SetActive(false);
+                button3.SetActive(false);
+                button4.SetActive(false);
+
+                yield return new WaitForSeconds(2f);
+                joueursAyantVote = 0;
+                joueursAyantRepondu = 0;
+                joueurtourActuel = 0;
+                AfficherNouvelleImage();
+                nombreDeManchesJouees++;
+                yield return null;
+            }
+
             //remonter image
             anim_Image.SetTrigger("Up");
             //afficher texte pour dire : voici le score, 
@@ -138,132 +263,18 @@ public class MiniJeu1 : MonoBehaviour
             anim_Classement.SetTrigger("ClassementActive");
             entre2.Play();
             anim_Reponse.SetTrigger("DownReponse");
+            yield return new WaitForSeconds(2f);
             txt_instruction.text = "First Classement";
+            yield return new WaitForSeconds(2f);
+            anim_Classement.SetTrigger("ClassementBye");
 
 
             ///miniJeu2Ref.miniJeu2Active = true;
             miniJeu2Manager.SetActive(true);
             //StartCoroutine(MiniJeu2());
-        }
-    }
-    private IEnumerator JouerDelaiAvantChangementQuatreFois()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            yield return StartCoroutine(GererDelaiAvantChangement());
+
         }
 
-        //remonter image
-        anim_Image.SetTrigger("Up");
-        //afficher texte pour dire : voici le score, 
-        txt_instruction.text = "And now everybody's scores !";
-        //afficher tous les joueurs en ligne avec leurs "logo" et leurs scores en dessous d'eux
-        anim_Classement.SetTrigger("ClassementActive");
-        entre2.Play();
-        anim_Reponse.SetTrigger("DownReponse");
-        txt_instruction.text = "First Classement";
-
-
-        ///miniJeu2Ref.miniJeu2Active = true;
-        miniJeu2Manager.SetActive(true);
-        //StartCoroutine(MiniJeu2());
-    }
-    private IEnumerator GererDelaiAvantChangement()
-    {
-        //MettreAJourAffichageTour();
-        if(miniJeu1Active == true)
-        {
-            txt_instruction.text = "Find a caption to this meme !";
-            anim_Image.SetTrigger("Down");
-            //playShaderAnim = true;
-
-            
-            yield return new WaitForSeconds(1f);
-            GO_timer.SetActive(true);
-            timerRef.remainingTime = 30;
-            timerRef.startTimer = true;
-            yield return new WaitForSeconds(30f);
-            GO_timer.SetActive(false);
-            timerRef.startTimer = false;
-            
-
-
-            //playShaderAnim = false;
-            txt_instruction.text = "Time's up, whrite your answers !";
-            iF_Reponses.text = "";
-            iF_Reponses.gameObject.SetActive(true);
-            logoJoueur.gameObject.SetActive(true);
-            yield return new WaitUntil(() => TousLesJoueursOntRepondu());
-            yield return new WaitForSeconds(2f);
-            numeroJoueurActuel = 0;
-            //InitieImage();
-            logoJoueur.gameObject.SetActive(false);
-            iF_Reponses.gameObject.SetActive(false);
-
-            txt_instruction.text = "Let's see everybody's answers !";
-            //anim_Reponse.SetTrigger("UpForReponse");
-
-
-            foreach (Button boutonJoueur in boutonJoueurs)
-            {
-                int randomNumberPos = randomNumberExclude(0, 4, excludesNumber);
-                excludesNumber.Add(randomNumberPos);
-                boutonJoueur.GetComponentInChildren<Text>().text = joueursDataBaseRef.datas[randomNumberPos].answer;
-                boutonJoueur.onClick.RemoveAllListeners();
-                boutonJoueur.onClick.AddListener(() => Vote(randomNumberPos+1));
-            }
-
-            foreach (int numberAnswer in excludesNumber)
-            {
-                txt_instruction.text = joueursDataBaseRef.datas[numberAnswer].answer;
-                yield return new WaitForSeconds(10f);
-            }
-
-
-
-
-
-            txt_instruction.text = "It's time to vote !";
-            yield return new WaitForSeconds(1f);
-            anim_Image.SetTrigger("UpImageReponse");
-
-
-            anim_Reponse.SetTrigger("DownReponse");
-            yield return new WaitForSeconds(2f);
-            button1.SetActive(true);
-            button2.SetActive(true);
-            button3.SetActive(true);
-            button4.SetActive(true);
-            txt_instruction.text = "";
-            //yield return new WaitForSeconds(1f);
-            //logoJoueur.gameObject.SetActive(true);
-            yield return new WaitUntil(() => TousLesJoueursOntVote());
-            txt_instruction.text = "Everyone has voted";
-            //logoJoueur.gameObject.SetActive(false);
-            Debug.Log("ye");
-            yield return new WaitForSeconds(2f);
-
-            int joueurGagnant = TrouverJoueurGagnant();
-            Debug.Log(joueurGagnant);
-            AttribuerPoints(joueurGagnant);
-            txt_instruction.text = joueurGagnant + " won !";
-
-
-            anim_Image.SetTrigger("Up");
-            imagesUtilisees.Add(imageCourante);
-            yield return new WaitForSeconds(2f);
-            button1.SetActive(false);
-            button2.SetActive(false);
-            button3.SetActive(false);
-            button4.SetActive(false);
-
-            yield return new WaitForSeconds(2f);
-            joueursAyantVote = 0;
-            joueursAyantRepondu = 0;
-            AfficherNouvelleImage();
-            nombreDeManchesJouees++;
-            yield return null;           
-        }        
     }
 
     
