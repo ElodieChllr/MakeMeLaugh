@@ -141,7 +141,7 @@ public class MiniJeu2Aled : MonoBehaviour
             GO_timer.SetActive(true);
             timerRef.startTimer = true;
             timerRef.remainingTime = 30;
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(30f);
             GO_timer.SetActive(false);
             timerRef.startTimer = false;
 
