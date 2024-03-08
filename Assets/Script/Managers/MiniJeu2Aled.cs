@@ -18,7 +18,7 @@ public class MiniJeu2Aled : MonoBehaviour
 
     private int numeroJoueurActuel = 0;
 
-    private int nombreDeManchesJouees = 0;
+    public int nombreDeManchesJouees = 0;
 
     public Image logoJoueur;
 
@@ -91,15 +91,7 @@ public class MiniJeu2Aled : MonoBehaviour
         {
             themeCourant = themesNonUtilisees[Random.Range(0,themesNonUtilisees.Count)];
             InitieThemes(themeCourant);
-            StartCoroutine(JouerDelaiAvantChangementQuatreFois());  
-
-        }
-        else
-        {
-            txt_instruction.text = "End of the game";
-
-            StartCoroutine(Final());
-
+            StartCoroutine(miniJeu2());  
 
         }
     }
@@ -181,7 +173,15 @@ public class MiniJeu2Aled : MonoBehaviour
             nombreDeManchesJouees++;
             AfficherNouveauThemes();
         }
-           
+
+        if(nombreDeManchesJouees == 2)
+        {
+            txt_instruction.text = "End of the game";
+
+            StartCoroutine(Final());
+        }
+        
+
     }
 
     private void InitieThemes(ThemeActingData data)

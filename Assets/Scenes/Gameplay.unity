@@ -4612,6 +4612,7 @@ MonoBehaviour:
   GO_particleSystem: {fileID: 350147400}
   anim_Reponse: {fileID: 1155703655}
   anim_Classement: {fileID: 1897016930}
+  nombreDeManchesJouees: 0
   logoJoueur: {fileID: 603605154}
   anim_Themes: {fileID: 496507065}
   txt_Themes: {fileID: 496507063}
